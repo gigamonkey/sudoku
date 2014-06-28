@@ -73,8 +73,11 @@ def legal_square(b, s):
 
 if __name__ == '__main__':
 
+    easy          = '.5...1479..27....8....462...46..9537....6....8935..64...961....1....23..3274...1.'
+    easy_solution = '658231479432795168971846253246189537715364892893527641589613724164972385327458916'
 
-    easy = '.5...1479..27....8....462...46..9537....6....8935..64...961....1....23..3274...1.'
+    hard          = '85...24..72......9..4.........1.7..23.5...9...4...........8..7..17..........36.4.'
+    hard_soution  = '859612437723854169164379528986147352375268914241593786432981675617425893598736241'
 
     b = board(easy)
 
@@ -83,6 +86,17 @@ if __name__ == '__main__':
     assert(b == board(oneline(b)))
     assert(easy == oneline(b))
 
-    print(grid(b))
-    print()
-    print(grid(solve(b)))
+    def check(puzzle, solution):
+        b = board(puzzle)
+        print(grid(b))
+        print()
+        s = solve(b)
+        assert(s == board(solution))
+        print(grid(s))
+        print()
+        print(oneline(b))
+        print(oneline(s))
+        print()
+
+    check(easy, easy_solution)
+    #check(hard, hard_solution) # Too slow with current code.
