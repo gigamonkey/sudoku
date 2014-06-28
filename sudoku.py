@@ -22,7 +22,7 @@ def board(text):
 #
 # Return a string representation of the board as a grid.
 #
-def grid(board):
+def grid(b):
     divider = '\n' + ('-+-'.join(['-' * 5] * 3)) + '\n'
     def sq(i): return b[i] if b[i] in digits else '.'
     def row(r): return ' | '.join([ ' '.join(sq(s) for s in rows[r][c:c+3]) for c in (0, 3, 6) ])
@@ -32,29 +32,29 @@ def grid(board):
 #
 # Return a single line representation of the board.
 #
-def oneline(board): return ''.join(c if c in digits else '.' for c in b)
+def oneline(b): return ''.join(c if c in digits else '.' for c in b)
 
 #
 # Given a board with some squares filled in, return a board completely
 # filled in or None if there is no solution.
 #
-def solve(board):
-    if board:
-        s = empty_square(board)
+def solve(b):
+    if b:
+        s = empty_square(b)
         if s is None:
-            return board
+            return b
         else:
-            for d in possible_digits(board, s):
-                solution = solve(assign(board, s, d))
+            for d in possible_digits(b, s):
+                solution = solve(assign(b, s, d))
                 if solution: return solution
     else:
         return None
 
-def empty_square(board): pass
+def empty_square(b): pass
 
-def possible_digits(board, s): pass
+def possible_digits(b, s): pass
 
-def assign(board, s, d): pass
+def assign(b, s, d): pass
 
 if __name__ == '__main__':
 
