@@ -15,3 +15,9 @@ def solve(board):
                 if solution: return solution
     else:
         return None
+
+def empty_square(board): pass
+
+def possible_digits(board, s): pass
+
+def assign(board, s, d): pass
