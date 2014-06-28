@@ -58,7 +58,11 @@ def empty_square(b):
     except:
         return None
 
-def possible_digits(b, s): return digits
+def possible_digits(b, s):
+    return filter(lambda d: legal_digit(b, s, d), digits)
+
+def legal_digit(b, s, d):
+    return not any(b[p] == d for p in peers[s])
 
 def assign(b, s, d):
     new_board = b.copy()
@@ -77,7 +81,7 @@ if __name__ == '__main__':
     easy_solution = '658231479432795168971846253246189537715364892893527641589613724164972385327458916'
 
     hard          = '85...24..72......9..4.........1.7..23.5...9...4...........8..7..17..........36.4.'
-    hard_soution  = '859612437723854169164379528986147352375268914241593786432981675617425893598736241'
+    hard_solution = '859612437723854169164379528986147352375268914241593786432981675617425893598736241'
 
     b = board(easy)
 
@@ -99,4 +103,4 @@ if __name__ == '__main__':
         print()
 
     check(easy, easy_solution)
-    #check(hard, hard_solution) # Too slow with current code.
+    check(hard, hard_solution) # Too slow with current code.
