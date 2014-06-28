@@ -5,10 +5,13 @@
 # filled in or None if there is no solution.
 #
 def solve(board):
-    s = empty_square(board)
-    if s is None:
-        return board
+    if board:
+        s = empty_square(board)
+        if s is None:
+            return board
+        else:
+            for d in possible_digits(board, s):
+                solution = solve(assign(board, s, d))
+                if solution: return solution
     else:
-        for d in possible_digits(board, s):
-            solution = solve(assign(board, s, d))
-            if solution: return solution
+        return None
