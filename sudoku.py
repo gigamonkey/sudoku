@@ -7,6 +7,8 @@ digits = set('123456789')
 rows  = [ list(range(r*9, (r+1)*9)) for r in range(9) ]
 cols  = [ list(range(c, 81, 9)) for c in range(9) ]
 boxes = [ [ r*9 + c for r in range(x, x+3) for c in range(y, y+3) ] for x in (0, 3, 6) for y in (0, 3, 6) ]
+units = rows + cols + boxes
+peers = [ set(sum([u for u in units if s in u], [])) - {s} for s in range(81) ]
 
 ########################################################################
 # Parsing and display
@@ -50,21 +52,37 @@ def solve(b):
     else:
         return None
 
-def empty_square(b): pass
+def empty_square(b):
+    try:
+        return b.index(None)
+    except:
+        return None
 
-def possible_digits(b, s): pass
+def possible_digits(b, s): return digits
 
-def assign(b, s, d): pass
+def assign(b, s, d):
+    new_board = b.copy()
+    new_board[s] = d
+    return new_board if legal(new_board) else None
+
+def legal(b):
+    return all(legal_square(b, s) for s in range(81))
+
+def legal_square(b, s):
+    return all(b[p] is None or b[s] != b[p] for p in peers[s])
 
 if __name__ == '__main__':
 
-    text = '9.........5.............................................................4.......1'
 
-    b = board(text)
+    easy = '.5...1479..27....8....462...46..9537....6....8935..64...961....1....23..3274...1.'
+
+    b = board(easy)
 
     # Some test cases.
     assert(b == board(grid(b)))
     assert(b == board(oneline(b)))
-    assert(text == oneline(b))
+    assert(easy == oneline(b))
 
     print(grid(b))
+    print()
+    print(grid(solve(b)))
