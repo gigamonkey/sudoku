@@ -7,8 +7,8 @@ digits = set('123456789')
 rows  = [ list(range(r*9, (r+1)*9)) for r in range(9) ]
 cols  = [ list(range(c, 81, 9)) for c in range(9) ]
 boxes = [ [ r*9 + c for r in range(x, x+3) for c in range(y, y+3) ] for x in (0, 3, 6) for y in (0, 3, 6) ]
-units = rows + cols + boxes
-peers = [ set(sum([u for u in units if s in u], [])) - {s} for s in range(81) ]
+units = [ [ u for u in (rows + cols + boxes) if s in u ] for s in range(81) ]
+peers = [ set(sum(units[s], [])) - {s} for s in range(81) ]
 
 ########################################################################
 # Parsing and display
@@ -19,10 +19,46 @@ peers = [ set(sum([u for u in units if s in u], [])) - {s} for s in range(81) ]
 # '.'. All other characters are ignored.
 #
 def board(text):
+    b = [ set(digits) for _ in range(81) ]
+    for s, d in enumerate(givens(text)):
+        if d and not set_digit(b, s, d): return None
+    return b
+
+def givens(text):
     return [ None if c == '.' else c for c in text if c in digits or c == '.' ]
 
+# Note, this mutates the passed in board because eliminate does.
+def set_digit(b, s, d):
+    return all(eliminate_digit(b, s, d2) for d2 in b[s] - {d})
+
+# Note, this mutates the passed in board.
+def eliminate_digit(b, s, d):
+    current = b[s]
+    if d not in current:
+        return True # Nothing to do
+    else:
+        current.remove(d)
+        if len(current) == 1:
+            # d is the only possible digit for this square so remove
+            # it from all peers.
+            d2 = list(current)[0]
+            if not all(eliminate_digit(b, p, d2) for p in peers[s]): return False
+
+        # Now see if it's apparent where d must go if not in s.
+        for u in units[s]:
+            places = [ s2 for s2 in u if d in b[s2] ]
+            if len(places) == 0:
+                # Ooops, we just eliminated the last possible place.
+                return False
+            elif len(places) == 1:
+                # Only one place to put it. Eliminate any other digits
+                # from that place.
+                return set_digit(b, places[0], d)
+
+        return True
+
 #
-# Return a string representation of the board as a grid.
+# Return a string representation of the board or a givens list as a grid.
 #
 def grid(b):
     divider = '\n' + ('-+-'.join(['-' * 5] * 3)) + '\n'
@@ -31,14 +67,18 @@ def grid(b):
     return divider.join(band(i) for i in range(3))
 
 #
-# Return a single line representation of the board.
+# Return a single line representation of the board or a givens list.
 #
 def oneline(b): return ''.join(sq(s) for s in b)
 
 #
 # Shared implementation of sq for grid and oneline.
 #
-def sq(s): return s if s in digits else '.'
+def sq(s):
+    if s is None or len(s) > 1:
+        return '.'
+    else:
+        return list(s)[0]
 
 #
 # Given a board with some squares filled in, return a board completely
@@ -57,27 +97,15 @@ def solve(b):
         return None
 
 def empty_square(b):
-    try:
-        return b.index(None)
-    except:
-        return None
+    for i, s in enumerate(b):
+        if len(s) > 1: return i
+    return None
 
-def possible_digits(b, s):
-    return filter(lambda d: legal_digit(b, s, d), digits)
-
-def legal_digit(b, s, d):
-    return not any(b[p] == d for p in peers[s])
+def possible_digits(b, s): return b[s]
 
 def assign(b, s, d):
-    new_board = b.copy()
-    new_board[s] = d
-    return new_board if legal(new_board) else None
-
-def legal(b):
-    return all(legal_square(b, s) for s in range(81))
-
-def legal_square(b, s):
-    return all(b[p] is None or b[s] != b[p] for p in peers[s])
+    new_board = [ s.copy() for s in b ]
+    return new_board if set_digit(new_board, s, d) else None
 
 if __name__ == '__main__':
 
@@ -92,19 +120,19 @@ if __name__ == '__main__':
     # Some test cases.
     assert b == board(grid(b))
     assert b == board(oneline(b))
-    assert easy == oneline(b)
+    # assert(easy == oneline(b)) # Not true any more since just loading the puzzle may partically (or completely) solve it.
+    assert easy == oneline(givens(easy))
 
     def check(puzzle, solution):
-        b = board(puzzle)
-        print(grid(b))
+        print(grid(givens(puzzle)))
         print()
-        s = solve(b)
+        s = solve(board(puzzle))
         assert s == board(solution)
         print(grid(s))
         print()
-        print(oneline(b))
+        print(oneline(givens(puzzle)))
         print(oneline(s))
         print()
 
     check(easy, easy_solution)
-    check(hard, hard_solution) # Really slow with current code.
+    check(hard, hard_solution)
