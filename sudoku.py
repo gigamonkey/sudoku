@@ -101,9 +101,8 @@ def solve(b):
         return None
 
 def empty_square(b):
-    for i, s in enumerate(b):
-        if len(s) > 1: return i
-    return None
+    p = min((p for p in enumerate(b) if len(p[1]) > 1), key=lambda p: len(p[1]), default=None)
+    return p[0] if p else None
 
 def possible_digits(b, s): return b[s]
 
