@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+#
+# Loosely based on code from Peter Norvig's "Solving Every Sudoku Puzzle" (http://norvig.com/sudoku.html)
+#
+
 digits = set('123456789')
 
 # If we use a 81-element list as our board, these give us lists of
