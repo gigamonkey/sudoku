@@ -26,15 +26,19 @@ def board(text):
 #
 def grid(b):
     divider = '\n' + ('-+-'.join(['-' * 5] * 3)) + '\n'
-    def sq(i): return b[i] if b[i] in digits else '.'
-    def row(r): return ' | '.join([ ' '.join(sq(s) for s in rows[r][c:c+3]) for c in (0, 3, 6) ])
+    def row(r): return ' | '.join([ ' '.join(sq(b[s]) for s in rows[r][c:c+3]) for c in (0, 3, 6) ])
     def band(i): return '\n'.join(row(r) for r in range(i*3, (i+1)*3))
     return divider.join(band(i) for i in range(3))
 
 #
 # Return a single line representation of the board.
 #
-def oneline(b): return ''.join(c if c in digits else '.' for c in b)
+def oneline(b): return ''.join(sq(s) for s in b)
+
+#
+# Shared implementation of sq for grid and oneline.
+#
+def sq(s): return s if s in digits else '.'
 
 #
 # Given a board with some squares filled in, return a board completely
@@ -86,16 +90,16 @@ if __name__ == '__main__':
     b = board(easy)
 
     # Some test cases.
-    assert(b == board(grid(b)))
-    assert(b == board(oneline(b)))
-    assert(easy == oneline(b))
+    assert b == board(grid(b))
+    assert b == board(oneline(b))
+    assert easy == oneline(b)
 
     def check(puzzle, solution):
         b = board(puzzle)
         print(grid(b))
         print()
         s = solve(b)
-        assert(s == board(solution))
+        assert s == board(solution)
         print(grid(s))
         print()
         print(oneline(b))
@@ -103,4 +107,4 @@ if __name__ == '__main__':
         print()
 
     check(easy, easy_solution)
-    check(hard, hard_solution) # Too slow with current code.
+    check(hard, hard_solution) # Really slow with current code.
