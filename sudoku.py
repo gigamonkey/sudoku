@@ -89,16 +89,16 @@ def sq(s):
 # filled in or None if there is no solution.
 #
 def solve(b):
-    if b:
-        s = empty_square(b)
-        if s is None:
-            return b
-        else:
-            for d in possible_digits(b, s):
-                solution = solve(assign(b, s, d))
-                if solution: return solution
-    else:
-        return None
+    if b is None or solved(b): return b
+
+    s = empty_square(b)
+    for d in possible_digits(b, s):
+        solution = solve(assign(b, s, d))
+        if solution: return solution
+
+    return None
+
+def solved(b): return not any(s for s in b if len(s) > 1)
 
 def empty_square(b):
     p = min((p for p in enumerate(b) if len(p[1]) > 1), key=lambda p: len(p[1]), default=None)
@@ -121,6 +121,7 @@ if __name__ == '__main__':
     b = board(easy)
 
     # Some test cases.
+    assert solve(None) == None
     assert b == board(grid(b))
     assert b == board(oneline(b))
     # assert(easy == oneline(b)) # Not true any more since just loading the puzzle may partically (or completely) solve it.
