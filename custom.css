@@ -1,0 +1,9 @@
+h1, h2, p { color: #226 !important }
+
+h2.section-slide {
+    text-align: center;
+}
+
+.slide p {
+    text-align: center;
+}
