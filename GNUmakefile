@@ -1,7 +1,18 @@
+images := $(patsubst %,board-%.svg,blank numbers pairs lables)
+
 all: slides.html
 
-clean:
-	rm slides.html
+images: $(images)
 
-slides.html: slides.asc custom.css
+clean:
+	rm -f slides.html
+	rm -f board-*.svg
+	rm -f board-*.png
+
+slides.html: slides.asc custom.css $(images)
 	cdk --theme=twitter --custom-css=custom.css slides.asc
+
+board-%.svg: svg.py
+	python3 svg.py $* > $@
+
+
