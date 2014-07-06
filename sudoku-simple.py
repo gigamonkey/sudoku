@@ -25,44 +25,13 @@ peers = [ set(sum(units[s], [])) - {s} for s in squares ]
 # as long as there are exactly 81 characters that are either digits or
 # '.'. All other characters are ignored.
 #
+
+def is_square_char(c): return c in digits or c == '.'
+
+def given(c): return c if c in digits else None
+
 def board(text):
-    b = [ set(digits) for _ in squares ]
-    for s, d in enumerate(givens(text)):
-        if d and not set_digit(b, s, d): return None
-    return b
-
-def givens(text):
-    return [ None if c == '.' else c for c in text if c in digits or c == '.' ]
-
-# Note, this mutates the passed in board because eliminate does.
-def set_digit(b, s, d):
-    return all(eliminate_digit(b, s, d2) for d2 in b[s] - {d})
-
-# Note, this mutates the passed in board.
-def eliminate_digit(b, s, d):
-    current = b[s]
-    if d not in current:
-        return True # Nothing to do
-    else:
-        current.remove(d)
-        if len(current) == 1:
-            # d is the only possible digit for this square so remove
-            # it from all peers.
-            d2 = list(current)[0]
-            if not all(eliminate_digit(b, p, d2) for p in peers[s]): return False
-
-        # Now see if it's apparent where d must go if not in s.
-        for u in units[s]:
-            places = [ s2 for s2 in u if d in b[s2] ]
-            if len(places) == 0:
-                # Ooops, we just eliminated the last possible place.
-                return False
-            elif len(places) == 1:
-                # Only one place to put it. Eliminate any other digits
-                # from that place.
-                return set_digit(b, places[0], d)
-
-        return True
+    return [ given(c) for c in text if is_square_char(c) ]
 
 #
 # Helpers for printing a board.
@@ -70,8 +39,7 @@ def eliminate_digit(b, s, d):
 
 divider = '\n------+-------+------\n'
 
-def sq(x):
-    return '.' if x is None or len(x) > 1 else list(x)[0]
+def sq(x): return x if x is not None else '.'
 
 def row_chunk(b, r, c): return (sq(b[s]) for s in rows[r][c:c+3])
 
@@ -106,17 +74,26 @@ def solve(b):
 
     return None
 
-def solved(b): return not any(s for s in b if len(s) > 1)
+def solved(b): return not any(s is None for s in b)
 
 def empty_square(b):
-    p = min((p for p in enumerate(b) if len(p[1]) > 1), key=lambda p: len(p[1]), default=None)
-    return p[0] if p else None
+    try:
+        return b.index(None)
+    except:
+        return None
 
-def possible_digits(b, s): return b[s]
+def possible_digits(b, s): return digits
 
 def assign(b, s, d):
-    new_board = [ s.copy() for s in b ]
-    return new_board if set_digit(new_board, s, d) else None
+    new_board = b.copy()
+    new_board[s] = d
+    return new_board if not contradiction(new_board) else None
+
+def contradiction(b):
+    return not all(okay(b, s) for s in squares if b[s] is not None)
+
+def okay(b, s):
+    return not any(b[s] == b[p] for p in peers[s])
 
 if __name__ == '__main__':
 
@@ -132,19 +109,18 @@ if __name__ == '__main__':
     assert solve(None) == None
     assert b == board(grid(b))
     assert b == board(oneline(b))
-    # assert(easy == oneline(b)) # Not true any more since just loading the puzzle may partically (or completely) solve it.
-    assert easy == oneline(givens(easy))
+    assert easy == oneline(b)
 
     def check(puzzle, solution):
-        print(grid(givens(puzzle)))
+        print(grid(board(puzzle)))
         print()
         s = solve(board(puzzle))
         assert s == board(solution)
         print(grid(s))
         print()
-        print(oneline(givens(puzzle)))
+        print(oneline(board(puzzle)))
         print(oneline(s))
         print()
 
     check(easy, easy_solution)
-    check(hard, hard_solution)
+    #check(hard, hard_solution) # Too slow with current code.
