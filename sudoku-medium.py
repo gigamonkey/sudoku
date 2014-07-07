@@ -30,46 +30,8 @@ def is_square_char(c): return c in digits or c == '.'
 
 def given(c): return c if c in digits else None
 
-def givens(text):
-    return [ given(c) for c in text if is_square_char(c) ]
-
 def board(text):
-    b = [ set(digits) for _ in squares ]
-    for s, d in enumerate(givens(text)):
-        if d and not set_digit(b, s, d): return None
-    return b
-
-# Note, this mutates the passed in board because eliminate does.
-def set_digit(b, s, d):
-    return all(eliminate_digit(b, s, d2) for d2 in b[s] - {d})
-
-# Note, this mutates the passed in board.
-def eliminate_digit(b, s, d):
-    if d in b[s]:
-        b[s].remove(d) # The mutation
-        if not propagate_implicit_assignment(b, s): return False
-        if not propagate_to_only_place(b, s, d): return False
-    return True
-
-def propagate_implicit_assignment(b, s):
-    # If s is down to one choice, eliminate from peers.
-    if len(b[s]) == 1:
-        d2 = list(b[s])[0]
-        for p in peers[s]:
-            if not eliminate_digit(b, p, d2): return False
-    return True
-
-def propagate_to_only_place(b, s, d):
-    # Now see if it's apparent where d must go if not in s.
-    for u in units[s]:
-        places = [ s2 for s2 in u if d in b[s2] ]
-        if len(places) == 0:
-            # Ooops, we just eliminated the last possible place.
-            return False
-        elif len(places) == 1:
-            if not set_digit(b, places[0], d): return False
-    return True
-
+    return [ given(c) for c in text if is_square_char(c) ]
 
 #
 # Helpers for printing a board.
@@ -77,8 +39,7 @@ def propagate_to_only_place(b, s, d):
 
 divider = '\n------+-------+------\n'
 
-def sq(x):
-    return '.' if x is None or len(x) > 1 else list(x)[0]
+def sq(x): return x if x is not None else '.'
 
 def row_chunk(b, r, c): return (sq(b[s]) for s in rows[r][c:c+3])
 
@@ -113,17 +74,30 @@ def solve(b):
 
     return None
 
-def solved(b): return all(len(s) == 1 for s in b)
+def solved(b): return not any(s is None for s in b)
 
 def empty_square(b):
-    def size(s): return len(b[s])
-    return min((s for s in squares if size(s) > 1), key=size)
+    try:
+        return b.index(None)
+    except:
+        return None
 
-def possible_digits(b, s): return b[s]
+def possible_digits(b, s):
+    return [ d for d in digits if legal_digit(b, s, d) ]
+
+def legal_digit(b, s, d):
+    return not any(b[p] == d for p in peers[s])
 
 def assign(b, s, d):
-    new_board = [ s.copy() for s in b ]
-    return new_board if set_digit(new_board, s, d) else None
+    new_board = b.copy()
+    new_board[s] = d
+    return new_board if not contradiction(new_board) else None
+
+def contradiction(b):
+    return not all(okay(b, s) for s in squares if b[s] is not None)
+
+def okay(b, s):
+    return not any(b[s] == b[p] for p in peers[s])
 
 if __name__ == '__main__':
 
@@ -133,9 +107,11 @@ if __name__ == '__main__':
 
     import fileinput
     puzzle = ''.join(fileinput.input())
-    side_by_side(grid(givens(puzzle)), grid(solve(board(puzzle))))
-
+    side_by_side(grid(board(puzzle)), grid(solve(board(puzzle))))
     exit()
+
+
+
 
     easy          = '.5...1479..27....8....462...46..9537....6....8935..64...961....1....23..3274...1.'
     easy_solution = '658231479432795168971846253246189537715364892893527641589613724164972385327458916'
@@ -143,26 +119,24 @@ if __name__ == '__main__':
     hard          = '85...24..72......9..4.........1.7..23.5...9...4...........8..7..17..........36.4.'
     hard_solution = '859612437723854169164379528986147352375268914241593786432981675617425893598736241'
 
-
     b = board(easy)
 
     # Some test cases.
     assert solve(None) == None
     assert b == board(grid(b))
     assert b == board(oneline(b))
-    # assert(easy == oneline(b)) # Not true any more since just loading the puzzle may partically (or completely) solve it.
-    assert easy == oneline(givens(easy))
+    assert easy == oneline(b)
 
     def check(puzzle, solution):
-        print(grid(givens(puzzle)))
+        print(grid(board(puzzle)))
         print()
         s = solve(board(puzzle))
         assert s == board(solution)
         print(grid(s))
         print()
-        print(oneline(givens(puzzle)))
+        print(oneline(board(puzzle)))
         print(oneline(s))
         print()
 
     check(easy, easy_solution)
-    check(hard, hard_solution)
+    #check(hard, hard_solution) # Too slow with current code.

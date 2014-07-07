@@ -97,6 +97,18 @@ def okay(b, s):
 
 if __name__ == '__main__':
 
+    def side_by_side(g1, g2, space=10):
+        for l1, l2 in zip(g1.split('\n'), g2.split('\n')):
+            print(l1 + (' ' * space) + l2)
+
+    import fileinput
+    puzzle = ''.join(fileinput.input())
+    side_by_side(grid(board(puzzle)), grid(solve(board(puzzle))))
+    exit()
+
+
+
+
     easy          = '.5...1479..27....8....462...46..9537....6....8935..64...961....1....23..3274...1.'
     easy_solution = '658231479432795168971846253246189537715364892893527641589613724164972385327458916'
 
