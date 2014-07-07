@@ -47,11 +47,11 @@ def set_digit(b, s, d):
 def eliminate_digit(b, s, d):
     if d in b[s]:
         b[s].remove(d) # The mutation
-        if not propagate_implicit_assignment(b, s): return False
-        if not propagate_to_only_place(b, s, d): return False
+        if not propagate_assignment(b, s): return False
+        if not propagate_to_unit(b, s, d): return False
     return True
 
-def propagate_implicit_assignment(b, s):
+def propagate_assignment(b, s):
     # If s is down to one choice, eliminate from peers.
     if len(b[s]) == 1:
         d2 = list(b[s])[0]
@@ -59,7 +59,7 @@ def propagate_implicit_assignment(b, s):
             if not eliminate_digit(b, p, d2): return False
     return True
 
-def propagate_to_only_place(b, s, d):
+def propagate_to_unit(b, s, d):
     # Now see if it's apparent where d must go if not in s.
     for u in units[s]:
         places = [ s2 for s2 in u if d in b[s2] ]
@@ -69,7 +69,6 @@ def propagate_to_only_place(b, s, d):
         elif len(places) == 1:
             if not set_digit(b, places[0], d): return False
     return True
-
 
 #
 # Helpers for printing a board.

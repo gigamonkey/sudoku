@@ -1,4 +1,4 @@
-images := $(patsubst %,board-%.svg,blank numbers pairs lables)
+images := $(patsubst %,board-%.svg,blank numbers)
 
 all: slides.html
 
@@ -14,5 +14,3 @@ slides.html: slides.asc custom.css $(images)
 
 board-%.svg: svg.py
 	python3 svg.py $* > $@
-
-
