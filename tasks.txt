@@ -1,7 +1,8 @@
-[ Go over the rules of Sudoku. ]
+[ Intro. Go over the rules of Sudoku. ]
 
-1. Decide how to represent a Sudoku board, which may or may not be
-   fully solved. [15-20 min]
+1. Think about how to represent a Sudoku board. The data structure
+   should be able to represent both solved and unsolved Sudoku. [15-20
+   min]
 
 [ Breifly discuss what the groups came up with. ]
 
@@ -13,7 +14,7 @@
 [ Discuss what groups came up with. Then show recursive 'search'
 function in template. Tasks 3-7 correspond to implementing the
 functions in template.py and can be done in one session of probably
-30-45 minutes with teachers roaming around. ]
+30-60 minutes with teachers roaming around. ]
 
 3. Implement 'solved' function that given an instance of your data
    structure, returns true if it is solved.
