@@ -1,0 +1,35 @@
+[ Go over the rules of Sudoku. ]
+
+1. Decide how to represent a Sudoku board, which may or may not be
+   fully solved. [15-20 min]
+
+[ Breifly discuss what the groups came up with. ]
+
+2. Think about how to write a function that taken such a data
+   structure, representing an unsolved Sudoku, returns a data
+   structure representing the solution. Okay to make changes to the
+   data structure you plan to use. [30 min]
+
+[ Discuss what groups came up with. Then show recursive 'search'
+function in template. Tasks 3-7 correspond to implementing the
+functions in template.py and can be done in one session of probably
+30-45 minutes with teachers roaming around. ]
+
+3. Implement 'solved' function that given an instance of your data
+   structure, returns true if it is solved.
+
+4. Implement 'empty_square'. May require adapting the data structure
+   developed in 1 to have a notion of a "square" that you can return.
+
+5. Implement 'possible_digits' to return a list (or set) of digits
+   that should be tried at a given square. Must return at least the
+   digit required by the solution but can return extras.
+
+6. Implement 'assign'. Make sure it leaves the passed in board
+   unchanged.
+
+7. Implement 'solve' in terms of the given 'search' function by
+   creating a board from the givens, passing it to search, and
+
+[ Review what groups came up with. If time allows, go through the code
+in constraints.py ]

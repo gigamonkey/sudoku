@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+## If you copy this file and then replace all the 'pass' statements
+## with an implementation of the function, you should have a working
+## Sudoku solver.
+
 import sudoku
 
 #
@@ -17,22 +21,22 @@ def search(b):
 
 def solved(b):
     "Returns true if the given board is already solved."
-    raise Exception("Not yet implemented")
+    pass
 
 def empty_square(b):
     "Return an empty square to try to fill."
-    raise Exception("Not yet implemented")
+    pass
 
 def possible_digits(b, s):
     "Return list of digits to try putting in square s."
-    raise Exception("Not yet implemented")
+    pass
 
 def assign(b, s, d):
     "Return new board with digit d in square s."
-    raise Exception("Not yet implemented")o
+    pass
 
 def solve(givens):
-    "Given a list of givens, return a solution."
-    raise Exception("Not yet implemented")
+    "Given a list of givens, return a solution in the form of a list of digits."
+    pass
 
 sudoku.main(solve)

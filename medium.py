@@ -2,19 +2,16 @@
 
 import sudoku
 
-def row(r): return [ r*9 + c for c in range(9) ]
-def col(c): return [ r*9 + c for r in range(9) ]
-def box(b):
-    rs, cs = [ range(n * 3, (n+1) * 3) for n in divmod(b, 3) ]
-    return [ r*9 + c for r in rs for c in cs ]
+def all_units():
+    rows  = [ [ r*9 + c for c in range(9) ] for r in range(9) ]
+    cols  = [ [ r*9 + c for r in range(9) ] for c in range(9) ]
+    boxes = [ [ r*9 + c for r in range(rs*3, (rs+1)*3) for c in range(cs*3, (cs+1)*3) ]
+              for rs, cs in (divmod(b, 3) for b in range(9)) ]
+    return rows + cols + boxes
 
 squares = range(81)
-
-rows  = [ row(r) for r in range(9) ]
-cols  = [ col(c) for c in range(9) ]
-boxes = [ box(b) for b in range(9) ]
-units = [ [ u for u in (rows + cols + boxes) if s in u ] for s in squares ]
-peers = [ set(sum(units[s], [])) - {s} for s in squares ]
+units   = [ [ u for u in all_units() if s in u ] for s in squares ]
+peers   = [ set(sum(units[s], [])) - {s} for s in squares ]
 
 #
 # Recursive depth first search
