@@ -19,19 +19,15 @@ peers = [ set(sum(units[s], [])) - {s} for s in squares ]
 #
 # Recursive depth first search
 #
-def solve(b):
+def search(b):
     if b is None or solved(b): return b
 
     s = empty_square(b)
     for d in possible_digits(b, s):
-        solution = solve(assign(b, s, d))
+        solution = search(assign(b, s, d))
         if solution: return solution
 
     return None
-
-def board(givens): return givens
-
-def to_list(b): return b
 
 def solved(b): return not any(s is None for s in b)
 
@@ -58,5 +54,7 @@ def contradiction(b):
 def okay(b, s):
     return not any(b[s] == b[p] for p in peers[s])
 
+def solve(givens):
+    return search(givens)
 
-sudoku.main(board, solve, to_list)
+sudoku.main(solve)

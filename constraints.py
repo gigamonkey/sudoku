@@ -19,23 +19,15 @@ peers = [ set(sum(units[s], [])) - {s} for s in squares ]
 #
 # Recursive depth first search
 #
-def solve(b):
+def search(b):
     if b is None or solved(b): return b
 
     s = empty_square(b)
     for d in possible_digits(b, s):
-        solution = solve(assign(b, s, d))
+        solution = search(assign(b, s, d))
         if solution: return solution
 
     return None
-
-def board(givens):
-    b = [ set(sudoku.digits) for _ in squares ]
-    for s, d in enumerate(givens):
-        if d and not set_digit(b, s, d): return None
-    return b
-
-def to_list(b): return [ None if len(b[s]) > 1 else list(b[s])[0] for s in squares ]
 
 def solved(b): return all(len(s) == 1 for s in b)
 
@@ -43,12 +35,12 @@ def empty_square(b):
     def size(s): return len(b[s])
     return min((s for s in squares if size(s) > 1), key=size)
 
-def possible_digits(b, s): return b[s]
+def possible_digits(b, s):
+    return b[s]
 
 def assign(b, s, d):
     new_board = [ s.copy() for s in b ]
     return new_board if set_digit(new_board, s, d) else None
-
 
 # Note, this mutates the passed in board because eliminate does.
 def set_digit(b, s, d):
@@ -81,6 +73,17 @@ def propagate_to_unit(b, s, d):
             if not set_digit(b, places[0], d): return False
     return True
 
+def solve(givens):
+    b = search(board(givens))
+    return b if b is None else solution(b)
 
+def board(givens):
+    b = [ set(sudoku.digits) for _ in squares ]
+    for s, d in enumerate(givens):
+        if d and not set_digit(b, s, d): return None
+    return b
 
-sudoku.main(board, solve, to_list)
+def solution(board):
+    return [ None if len(b[s]) > 1 else list(b[s])[0] for s in squares ]
+
+sudoku.main(solve)
