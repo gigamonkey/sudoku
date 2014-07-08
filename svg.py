@@ -40,6 +40,13 @@ elif argv[1] == "labels":
     for r in range(9):
         for c in range(9):
             print(text.format(coord(c) + size/2, coord(r) + size*.6, "{}{}".format(letters[r], c+1)))
+else:
+    from sudoku import givens
+    with open(argv[1] + ".txt") as f:
+        for i, g in enumerate(givens(f.read())):
+            if g is not None:
+               print(text.format(coord(i % 9) + size/2, coord(i // 9) + size * .6, g))
+
 
 
 print(""" </g>

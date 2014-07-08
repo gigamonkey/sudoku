@@ -1,4 +1,4 @@
-images := $(patsubst %,board-%.svg,blank numbers)
+images := $(patsubst %,board-%.svg,blank numbers easy hard)
 
 all: slides.html
 
