@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import sudoku
+from sudoku import digits, main
 
 def all_units():
     rows  = [ [ r*9 + c for c in range(9) ] for r in range(9) ]
@@ -35,7 +35,7 @@ def empty_square(b):
         return None
 
 def possible_digits(b, s):
-    return [ d for d in sudoku.digits if legal_digit(b, s, d) ]
+    return [ d for d in digits if legal_digit(b, s, d) ]
 
 def legal_digit(b, s, d):
     return not any(b[p] == d for p in peers[s])
@@ -54,4 +54,4 @@ def okay(b, s):
 def solve(givens):
     return search(givens)
 
-sudoku.main(solve)
+main(solve)

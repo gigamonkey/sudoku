@@ -4,7 +4,7 @@
 ## with an implementation of the function, you should have a working
 ## Sudoku solver.
 
-import sudoku
+from sudoku import digits, main
 
 #
 # Recursive depth first search
@@ -14,7 +14,7 @@ def search(b):
 
     s = empty_square(b)
     for d in possible_digits(b, s):
-        solution = solve(assign(b, s, d))
+        solution = search(assign(b, s, d))
         if solution: return solution
 
     return None
@@ -39,4 +39,4 @@ def solve(givens):
     "Given a list of givens, return a solution in the form of a list of digits."
     pass
 
-sudoku.main(solve)
+main(solve)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import sudoku
+from sudoku import digits, main
 
 def all_units():
     rows  = [ [ r*9 + c for c in range(9) ] for r in range(9) ]
@@ -75,7 +75,7 @@ def solve(givens):
     return b if b is None else solution(b)
 
 def board(givens):
-    b = [ set(sudoku.digits) for _ in squares ]
+    b = [ set(digits) for _ in squares ]
     for s, d in enumerate(givens):
         if d and not set_digit(b, s, d): return None
     return b
@@ -83,4 +83,4 @@ def board(givens):
 def solution(b):
     return [ None if len(b[s]) > 1 else list(b[s])[0] for s in squares ]
 
-sudoku.main(solve)
+main(solve)

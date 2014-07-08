@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import sudoku
+from sudoku import digits, main
 
 def all_units():
     rows  = [ [ r*9 + c for c in range(9) ] for r in range(9) ]
@@ -35,7 +35,7 @@ def empty_square(b):
         return None
 
 def possible_digits(b, s):
-    return sudoku.digits
+    return digits
 
 def assign(b, s, d):
     new_board = b.copy()
@@ -51,4 +51,4 @@ def okay(b, s):
 def solve(givens):
     return search(givens)
 
-sudoku.main(solve)
+main(solve)
