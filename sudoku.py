@@ -43,4 +43,4 @@ def band(b, i):
 def main(board, solve, to_list):
     import fileinput
     puzzle = givens(''.join(fileinput.input()))
-    side_by_side(to_list(board(puzzle)), to_list(solve(board(puzzle))))
+    side_by_side(puzzle, to_list(solve(board(puzzle))))
