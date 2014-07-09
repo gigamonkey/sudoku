@@ -2,16 +2,15 @@
 
 from sudoku import digits, main
 
-def all_units():
-    rows  = [ [ r*9 + c for c in range(9) ] for r in range(9) ]
-    cols  = [ [ r*9 + c for r in range(9) ] for c in range(9) ]
-    boxes = [ [ r*9 + c for r in range(rs*3, (rs+1)*3) for c in range(cs*3, (cs+1)*3) ]
-              for rs, cs in (divmod(b, 3) for b in range(9)) ]
-    return rows + cols + boxes
+rows  = [ [ r*9 + c for c in range(9) ] for r in range(9) ]
+cols  = [ [ r*9 + c for r in range(9) ] for c in range(9) ]
+boxes = [ [ r*9 + c for r in range(rs*3, (rs+1)*3) for c in range(cs*3, (cs+1)*3) ]
+          for rs, cs in (divmod(b, 3) for b in range(9)) ]
 
-squares = range(81)
-units   = [ [ u for u in all_units() if s in u ] for s in squares ]
-peers   = [ set(sum(units[s], [])) - {s} for s in squares ]
+squares   = range(81)
+all_units = rows + cols + boxes
+units     = [ [ u for u in all_units if s in u ] for s in squares ]
+peers     = [ set().union(*units[s]) - {s} for s in squares ]
 
 #
 # Recursive depth first search
@@ -72,15 +71,15 @@ def propagate_to_unit(b, s, d):
 
 def solve(givens):
     b = search(board(givens))
-    return b if b is None else solution(b)
+    if b is not None:
+        return [ None if len(b[s]) > 1 else list(b[s])[0] for s in squares ]
+    else:
+        return None
 
 def board(givens):
     b = [ set(digits) for _ in squares ]
     for s, d in enumerate(givens):
         if d and not set_digit(b, s, d): return None
     return b
-
-def solution(b):
-    return [ None if len(b[s]) > 1 else list(b[s])[0] for s in squares ]
 
 main(solve)
