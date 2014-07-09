@@ -13,9 +13,9 @@ print("""<?xml version="1.0"?>
   <title>Sudoku</title>
 """.format((padding * 2) + (size * 9), (padding * 2) + (size * 9)))
 
-rect = """  <rect height="{}" width="{}" y="{}" x="{}" stroke-width=".5" stroke="#000" fill="#fff"/>"""
-bigrect = """  <rect height="{}" width="{}" y="{}" x="{}" stroke-width="1" stroke="#000" fill="#fff" fill-opacity="0.0"/>"""
-text = """  <text font-family="sans-serif" fill="#777" text-anchor="middle" x="{}" y="{}">{}</text>"""
+rect = """  <rect height="{}" width="{}" y="{}" x="{}" stroke-width=".5" stroke="#777" fill="#fff"/>"""
+bigrect = """  <rect height="{}" width="{}" y="{}" x="{}" stroke-width="3" stroke="#777" fill="#fff" fill-opacity="0.0"/>"""
+text = """  <text font-family="sans-serif" fill="#333" text-anchor="middle" x="{}" y="{}">{}</text>"""
 
 for y in range(9):
     for x in range(9):
@@ -23,7 +23,7 @@ for y in range(9):
 
 for y in range(3):
     for x in range(3):
-        print(bigrect.format(size * 3, size * 3, padding + (y * size * 3), padding + (x * size * 3)))
+        print(bigrect.format(size * 3, size * 3, coord(y * 3), coord(x * 3)))
 
 if argv[1] == "blank":
     pass
