@@ -4,8 +4,8 @@ from sudoku import digits, main
 
 rows  = [ [ r*9 + c for c in range(9) ] for r in range(9) ]
 cols  = [ [ r*9 + c for r in range(9) ] for c in range(9) ]
-boxes = [ [ r*9 + c for r in range(rs*3, (rs+1)*3) for c in range(cs*3, (cs+1)*3) ]
-          for rs, cs in (divmod(b, 3) for b in range(9)) ]
+boxes = [ [ r*9 + c for r in range(rs, rs + 3) for c in range(cs, cs + 3) ]
+          for rs in (0, 3, 6) for cs in (0, 3, 6) ]
 
 squares   = range(81)
 all_units = rows + cols + boxes
